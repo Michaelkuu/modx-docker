@@ -1,28 +1,30 @@
-version: '3'
+version: '3.8'
+
 services:
   web:
-    image: sterc/modx
-    links:
-      - 'db:mysql'
+    image: php:8.1-apache
     ports:
-      - '8000:80'
-    environment:
-      MODX_VERSION: 2.7.0
-      MODX_DB_HOST: 'mysql:3306'
-      MODX_DB_PASSWORD: modx
-      MODX_DB_USER: modx
-      MODX_DB_NAME: modx
+      - 80:80
     volumes:
-      - './html:/var/www/html'
+      - ./modx:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - MODX_SETUP=yes
+    working_dir: /var/www/html
+    entrypoint: /bin/bash -c "apt update && apt install -y unzip wget libpng-dev libjpeg-dev libonig-dev libxml2-dev zip && docker-php-ext-install mysqli && wget https://modx.com/download/direct?id=revolution -O modx.zip && unzip modx.zip && cp -r modx-*/* . && apache2-foreground"
+
   db:
-    image: 'mysql:5.7'
+    image: mariadb:10.5
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: modx
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: modxdb
       MYSQL_USER: modx
-      MYSQL_PASSWORD: modx
-    ports:
-      - '3306:3306'
-    command: mysqld --sql-mode=NO_ENGINE_SUBSTITUTION
+      MYSQL_PASSWORD: modxpass
     volumes:
-      - './mysql:/var/lib/mysql'
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+
