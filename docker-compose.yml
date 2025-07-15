@@ -16,8 +16,10 @@ services:
       apt install -y unzip wget libpng-dev libjpeg-dev libonig-dev libxml2-dev zip &&
       docker-php-ext-install pdo pdo_mysql mysqli &&
       wget https://modx.com/download/direct/modx-2.8.4-pl.zip -O modx.zip &&
-      unzip modx.zip &&
+      unzip -o modx.zip &&
       cp -r modx-*/. . &&
+      chown -R www-data:www-data /var/www/html/core &&
+      chmod -R 775 /var/www/html/core &&
       apache2-foreground
       "
 
