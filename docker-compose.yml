@@ -15,9 +15,9 @@ services:
       apt update &&
       apt install -y unzip wget libpng-dev libjpeg-dev libonig-dev libxml2-dev zip &&
       docker-php-ext-install mysqli &&
-      wget https://modx.com/download/direct?id=revolution -O modx.zip &&
+      wget https://modx.com/download/direct/modx-2.8.4-pl.zip -O modx.zip &&
       unzip modx.zip &&
-      cp -r modx-*/* . &&
+      cp -r modx-*/. . &&
       apache2-foreground
       "
 
